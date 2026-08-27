@@ -248,13 +248,9 @@ let sessionTab = "REQUESTED";
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
-    const loaded = raw ? JSON.parse(raw) : deepCopy(seed);
-    loaded.mentors.forEach(mentor => { mentor.uid = "0000"; });
-    return loaded;
+    return raw ? JSON.parse(raw) : deepCopy(seed);
   }catch{
-    const loaded = deepCopy(seed);
-    loaded.mentors.forEach(mentor => { mentor.uid = "0000"; });
-    return loaded;
+    return deepCopy(seed);
   }
 }
 function save(){
@@ -397,7 +393,7 @@ function mentorCard(m){
   const ex=state.expertise.filter(e=>m.expertise.includes(e.id));
   const slots=state.slots.filter(s=>s.mentorId===m.id&&s.status==="OPEN");
   return `<article class="mentor-card">
-    <div class="mentor-head"><div class="avatar">${initials(m.name)}</div><div><h3>${m.name}</h3><p>${m.jobTitle}</p><small class="muted">UID ${m.uid} · ${m.department}</small></div></div>
+    <div class="mentor-head"><div class="avatar">${initials(m.name)}</div><div><h3>${m.name}</h3><p>${m.jobTitle}</p><small class="muted">${m.department}</small></div></div>
     <div style="margin-top:12px"><span class="tag">${m.type}</span></div><p class="mentor-about">${m.about}</p>
     <div class="tags">${ex.slice(0,4).map(e=>`<span class="tag">${e.name}</span>`).join("")}</div>
     <div class="slots"><strong style="font-size:12px">Available times</strong>
@@ -408,7 +404,7 @@ function mentorCard(m){
 function staffFind(){
   const ex=state.expertise.filter(e=>e.categoryId===filters.category);
   let mentors=state.mentors.filter(m=>m.active&&m.services.includes(filters.service));
-  if(filters.expertise) mentors=mentors.filter(m=>m.expertise.includes(filters.expertise)); if(filters.search){const q=filters.search.toLowerCase();mentors=mentors.filter(m=>`${m.uid} ${m.name} ${m.jobTitle} ${m.department} ${m.type}`.toLowerCase().includes(q));}
+  if(filters.expertise) mentors=mentors.filter(m=>m.expertise.includes(filters.expertise)); if(filters.search){const q=filters.search.toLowerCase();mentors=mentors.filter(m=>`${m.name} ${m.jobTitle} ${m.department} ${m.type}`.toLowerCase().includes(q));}
   const request = selectedSlot ? `<section class="request-panel">
     <div class="eyebrow">Session Request</div><h2>Tell your mentor what you would like to discuss.</h2>
     <div class="field"><label>What would you like to discuss?</label><textarea id="topic" placeholder="Briefly describe the topic or support you are looking for..."></textarea></div>
@@ -418,7 +414,7 @@ function staffFind(){
   return shell(
     heading("Find Support","Find the right mentor.","Choose what you would like help with and select a suitable available session.")+
     `<section class="filter-panel">
-      <div class="field"><label>Search Mentor</label><input id="mentor-search" placeholder="Name, UID, job title or division" oninput="setMentorSearch(this.value)" value="${filters.search||""}"></div>
+      <div class="field"><label>Search Mentor</label><input id="mentor-search" placeholder="Name, job title or division" oninput="setMentorSearch(this.value)" value="${filters.search||""}"></div>
       <div class="field"><label>Session Type</label><div class="segmented"><button class="${filters.service==="MENTORING"?"active":""}" onclick="setService('MENTORING')">Mentoring</button><button class="${filters.service==="COACHING"?"active":""}" onclick="setService('COACHING')">Coaching</button></div></div>
       <div class="field"><label>Category</label><select onchange="setCategory(this.value)"><option value="">Select category</option>${state.categories.map(c=>`<option value="${c.id}" ${filters.category===c.id?"selected":""}>${c.name}</option>`).join("")}</select></div>
       <div class="field"><label>Area of Expertise</label><select ${!filters.category?"disabled":""} onchange="setExpertise(this.value)"><option value="">Select expertise</option>${ex.map(e=>`<option value="${e.id}" ${filters.expertise===e.id?"selected":""}>${e.name}</option>`).join("")}</select></div>
@@ -558,7 +554,7 @@ function hrOverview(){
 function hrMentors(){
   return shell(
     heading("Mentor Management","Manage mentors.","Add mentors, update profiles, expertise and programme participation.",`<button class="btn btn-primary" onclick="mentorModal()">+ Add Mentor</button>`)+
-    `<div class="table-wrap"><table><thead><tr><th>UID</th><th>Mentor</th><th>Division</th><th>Type</th><th>Services</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.mentors.map(m=>`<tr><td><strong>${m.uid||"—"}</strong></td><td><strong>${m.name}</strong><span class="table-sub">${m.jobTitle}</span></td><td>${m.department}</td><td><span class="tag">${m.type||"Mentor"}</span></td><td><div class="tags">${m.services.map(s=>`<span class="tag">${s}</span>`).join("")}</div></td><td>${statusBadge(m.active?"ACTIVE":"INACTIVE")}</td><td><div class="actions"><button class="link-btn" onclick="mentorModal('${m.id}')">Edit</button><button class="link-btn" onclick="toggleMentor('${m.id}')">${m.active?"Deactivate":"Activate"}</button></div></td></tr>`).join("")}</tbody></table></div>`
+    `<div class="table-wrap"><table><thead><tr><th>Mentor</th><th>Division</th><th>Type</th><th>Services</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.mentors.map(m=>`<tr><td><strong>${m.name}</strong><span class="table-sub">${m.jobTitle}</span></td><td>${m.department}</td><td><span class="tag">${m.type||"Mentor"}</span></td><td><div class="tags">${m.services.map(s=>`<span class="tag">${s}</span>`).join("")}</div></td><td>${statusBadge(m.active?"ACTIVE":"INACTIVE")}</td><td><div class="actions"><button class="link-btn" onclick="mentorModal('${m.id}')">Edit</button><button class="link-btn" onclick="toggleMentor('${m.id}')">${m.active?"Deactivate":"Activate"}</button></div></td></tr>`).join("")}</tbody></table></div>`
   );
 }
 function mentorModal(mid=""){
