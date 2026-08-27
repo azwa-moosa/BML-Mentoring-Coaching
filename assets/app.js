@@ -248,9 +248,13 @@ let sessionTab = "REQUESTED";
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : deepCopy(seed);
+    const loaded = raw ? JSON.parse(raw) : deepCopy(seed);
+    loaded.mentors.forEach(mentor => { mentor.uid = "0000"; });
+    return loaded;
   }catch{
-    return deepCopy(seed);
+    const loaded = deepCopy(seed);
+    loaded.mentors.forEach(mentor => { mentor.uid = "0000"; });
+    return loaded;
   }
 }
 function save(){
