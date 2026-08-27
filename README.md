@@ -1,40 +1,5 @@
 # BML Mentoring & Coaching — UI Prototype
 
-This is a fully self-contained **functional dummy prototype**.
-
-It does **not** require:
-- Node.js
-- npm
-- a database
-- Microsoft login
-- email
-- Outlook
-- Power Apps
-- Power Automate
-
-## Run it
-
-### Easiest
-Open `index.html` directly in a browser.
-
-### VS Code Live Server
-Right-click `index.html` → **Open with Live Server**.
-
-### Simple Python server
-```bash
-python3 -m http.server 8080
-```
-
-Then open:
-```text
-http://localhost:8080
-```
-
-## Vercel
-Upload/push this folder to GitHub, import it in Vercel and select **Other** as the framework preset.
-
-No environment variables are required.
-
 ## What works
 
 ### Staff
